@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
-	static int Width = 40;
-	static int Height = 40;
-	static int CellSize = 10;
+	static int Width = 400;
+	static int Height = 400;
+	static int CellSize = 2;
 	static int[][] grid, nextGen;
 	static Main s;
 
@@ -32,38 +32,35 @@ public class Main extends JFrame {
 
 	private static void Run() {
 		// Run the Game Of Life
-		nextGen = grid;
-		for (int h = 0; h < 2; h++) {		//change for how many generations you want, now its set as 2
+		for (int h = 0; h < 10000000; h++) {		//change for how many generations you want, now its set as 2
 			s.setTitle("Game Of Life - Generation: " + h);
-			grid = nextGen;
+					
 			try {
-				TimeUnit.SECONDS.sleep(2);
+				TimeUnit.MILLISECONDS.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			for (int i = 0; i < Width; i++) {
 				for (int j = 0; j < Height; j++) {
-					int count = CountNeighbors(j, i);
-					Update(count, j, i);
+					int count = CountNeighbors(i, j);
+					Update(count, i, j);
 				}
 			}		
 			s.repaint();
-			System.out.println(CountNeighbors(12, 11) + " - " + grid[12][11]);
+			grid = nextGen;
 		}
 	}
 
 	private static void Update(int count, int x, int y) {
 		// Update
 		// Check
-		if (grid[x][y] == 1 && count < 2) {
+		if (count < 2 || count > 3) {
 			nextGen[x][y] = 0;
-		}else if (grid[x][y] == 1 && count > 3) {
-			nextGen[x][y] = 0;
-		}else if (grid[x][y] == 0 && count == 3) {
-			nextGen[x][y] = 1;
-		}else {
+		}if(count == 2) {
 			nextGen[x][y] = grid[x][y];
+		}if(count == 3) {
+			nextGen[x][y] = 1;
 		}
 	}
 
@@ -75,55 +72,54 @@ public class Main extends JFrame {
 		for (int i = x - 1; i <= x + 1; i++) {
 			if (i < 0) {
 				o = Width + i;
-			} else if (i > Width - 1) {
+			} else if (i > Width) {
 				o = i - Width;
 			} else {
 				o = i;
-			}
-			for (int j = y - 1; j <= y + 1; j++) {
+			}for (int j = y - 1; j <= y + 1; j++) {
 				if (j < 0) {
 					k = Height + j;
-				} else if (j > Height - 1) {
+				} else if (j > Height) {
 					k = j - Height;
 				} else {
 					k = j;
 				}
-
 				count += grid[k][o];
+
 			}
 		}
 		count -= grid[x][y];
-		if(count > 3) {
-		System.out.println(x + " - " + y + " -- " + count + " == " + grid[x][y]);}
 		return count;
 	}
 
 	private static void FormatValues() {
-		grid = new int[Width][Height];
-		nextGen = new int[Width][Height];
-		makeBeacon();			// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock()
-		// or the line can be removed completely and just allow the randomization below
-		// Randomize grid values
-		/*
-		for (int i = 0; i < Height; i++) {
-			for (int j = 0; j < Width; j++) {
+		grid = new int[Width+1][Height+1];
+		nextGen = new int[Width+1][Height+1];
+		// Randomize grid values and set nextGen to 0
+		for (int i = 0; i < Width; i++) {
+			for (int j = 0; j < Height; j++) {
 				grid[i][j] = new Random().nextInt(2);
+				nextGen[i][j] = grid[i][j];
 			}
 		}
-		*/
+		//makeBeacon();	// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock() 
 	}
 
 	public void paint(Graphics g) {
-		for (int i = 0; i < Width-1; i++) {
-			for (int j = 0; j < Height-1; j++) {
-				if (grid[i][j] == 0) {
+		for (int i = 0; i < Width; i++) {
+			for (int j = 0; j < Height; j++) {
+				if(grid[i][j] == 0) {
 					g.setColor(Color.WHITE);
-				} else {
+				}else{
 					g.setColor(Color.BLACK);
 				}
 				g.fillRect(i * CellSize, j * CellSize, CellSize, CellSize);
 			}
 		}
+		//g.setColor(Color.RED);
+		//g.fillRect(11 * CellSize, 12 * CellSize, CellSize, CellSize);
+		//g.setColor(Color.GREEN);
+		//g.fillRect(10 * CellSize, 12 * CellSize, CellSize, CellSize);
 	}
 	public static void makeGlider() {
 		for (int i = 0; i < Width; i++) {
@@ -155,13 +151,13 @@ public class Main extends JFrame {
 			}
 		}
 		grid[10][10] = 1;
-				grid[11][10] = 1;
-						grid[10][11] = 1;
-						grid[11][11] = 1;
-						grid[12][12] = 1;
-						grid[13][12] = 1;
-								grid[12][13] = 1;
-								grid[13][13] = 1;
+		grid[10][11] = 1;
+		grid[11][10] = 1;
+		grid[11][11] = 1;
+		grid[12][12] = 1;
+		grid[13][12] = 1;
+		grid[12][13] = 1;
+		grid[13][13] = 1;
 	}
 	public static void makeBlock() {
 		for (int i = 0; i < Width; i++) {
@@ -173,6 +169,5 @@ public class Main extends JFrame {
 				grid[11][10] = 1;
 						grid[10][11] = 1;
 						grid[11][11] = 1;
-
 	}
 }
