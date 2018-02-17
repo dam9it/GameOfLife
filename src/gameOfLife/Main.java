@@ -2,16 +2,19 @@ package gameOfLife;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
-	static int Width = 400;
-	static int Height = 400;
-	static int CellSize = 2;
-	static int[][] grid, nextGen;
+	static int Width = 500;
+	static int Height = 500;
+	static int CellSize = 3;
+	static int[][] grid;
+	static int[][] nextGen;
 	static Main s;
 
 	public Main() {
@@ -27,41 +30,54 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		s = new Main();
 		FormatValues();
-		Run();
-	}
-
-	private static void Run() {
-		// Run the Game Of Life
-		for (int h = 0; h < 10000000; h++) {		//change for how many generations you want, now its set as 2
+		
+		
+		for (int h = 0; h < 20000; h++) {		//change for how many generations you want, now its set as 2
 			s.setTitle("Game Of Life - Generation: " + h);
-					
-			try {
-				TimeUnit.MILLISECONDS.sleep(100);
+					System.out.println("Kierros " + (h +1));
+					try {
+				TimeUnit.MILLISECONDS.sleep(10);
+				Run();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+					s.repaint();
+					for (int i = 0; i < Width; i++) {
+						for (int j = 0; j < Height; j++) {
+					grid[i][j] =  nextGen[i][j];
+						}}
+		}
+	}
+
+	private static void Run() {
+		// Run the Game Of Life
+		System.out.println("running");
 			for (int i = 0; i < Width; i++) {
 				for (int j = 0; j < Height; j++) {
-					int count = CountNeighbors(i, j);
-					Update(count, i, j);
+					Update(CountNeighbors(i, j), i, j);
 				}
-			}		
-			s.repaint();
-			grid = nextGen;
-		}
+			}
+
+			
+			
+		
 	}
 
 	private static void Update(int count, int x, int y) {
 		// Update
 		// Check
+
 		if (count < 2 || count > 3) {
 			nextGen[x][y] = 0;
 		}if(count == 2) {
 			nextGen[x][y] = grid[x][y];
 		}if(count == 3) {
+
 			nextGen[x][y] = 1;
+
 		}
+
 	}
 
 	private static int CountNeighbors(int x, int y) {	// The bug is most likely here
@@ -84,11 +100,14 @@ public class Main extends JFrame {
 				} else {
 					k = j;
 				}
-				count += grid[k][o];
-
+				count += grid[o][k];
+					if(x == 11 && y == 12) {
+					//	System.out.println(o + "-" + k + " == " + grid[o][k]);
+					}
 			}
 		}
 		count -= grid[x][y];
+	//	System.out.println(x + "|"+ y + " = " + count);
 		return count;
 	}
 
@@ -99,10 +118,10 @@ public class Main extends JFrame {
 		for (int i = 0; i < Width; i++) {
 			for (int j = 0; j < Height; j++) {
 				grid[i][j] = new Random().nextInt(2);
-				nextGen[i][j] = grid[i][j];
+				nextGen[i][j] = 0;
 			}
 		}
-		//makeBeacon();	// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock() 
+		//makeBlinker();	// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock() , makeBeacon();
 	}
 
 	public void paint(Graphics g) {
