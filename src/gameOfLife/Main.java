@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
-	static int Width = 500;
-	static int Height = 500;
+	static int Width = 300;
+	static int Height = 300;
 	static int CellSize = 3;
 	static int[][] grid;
 	static int[][] nextGen;
@@ -30,11 +30,8 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		s = new Main();
 		FormatValues();
-		
-		
 		for (int h = 0; h < 20000; h++) {		//change for how many generations you want, now its set as 2
 			s.setTitle("Game Of Life - Generation: " + h);
-					System.out.println("Kierros " + (h +1));
 					try {
 				TimeUnit.MILLISECONDS.sleep(10);
 				Run();
@@ -52,16 +49,12 @@ public class Main extends JFrame {
 
 	private static void Run() {
 		// Run the Game Of Life
-		System.out.println("running");
 			for (int i = 0; i < Width; i++) {
 				for (int j = 0; j < Height; j++) {
 					Update(CountNeighbors(i, j), i, j);
 				}
 			}
-
-			
-			
-		
+	
 	}
 
 	private static void Update(int count, int x, int y) {
@@ -88,26 +81,22 @@ public class Main extends JFrame {
 		for (int i = x - 1; i <= x + 1; i++) {
 			if (i < 0) {
 				o = Width + i;
-			} else if (i > Width) {
+			} else if (i > Width - 1) {
 				o = i - Width;
 			} else {
 				o = i;
 			}for (int j = y - 1; j <= y + 1; j++) {
 				if (j < 0) {
 					k = Height + j;
-				} else if (j > Height) {
+				} else if (j > Height -1) {
 					k = j - Height;
 				} else {
 					k = j;
 				}
 				count += grid[o][k];
-					if(x == 11 && y == 12) {
-					//	System.out.println(o + "-" + k + " == " + grid[o][k]);
-					}
 			}
 		}
 		count -= grid[x][y];
-	//	System.out.println(x + "|"+ y + " = " + count);
 		return count;
 	}
 
@@ -121,7 +110,7 @@ public class Main extends JFrame {
 				nextGen[i][j] = 0;
 			}
 		}
-		//makeBlinker();	// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock() , makeBeacon();
+		//makeGlider();	// Beacon is good for testing, can be changed to makeGlider(), makeBlinker(), makeBlock() , makeBeacon();
 	}
 
 	public void paint(Graphics g) {
@@ -135,10 +124,6 @@ public class Main extends JFrame {
 				g.fillRect(i * CellSize, j * CellSize, CellSize, CellSize);
 			}
 		}
-		//g.setColor(Color.RED);
-		//g.fillRect(11 * CellSize, 12 * CellSize, CellSize, CellSize);
-		//g.setColor(Color.GREEN);
-		//g.fillRect(10 * CellSize, 12 * CellSize, CellSize, CellSize);
 	}
 	public static void makeGlider() {
 		for (int i = 0; i < Width; i++) {
